@@ -9,4 +9,5 @@ import Foundation
 
 protocol HomeBaseCoordinator: Coordinator {
     func goToPlayerDetails(player: Player)
+    func goToSecondDetailsScreen(seasonAverages: [SeasonAveragesData])
 }

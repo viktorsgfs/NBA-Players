@@ -35,16 +35,7 @@ class MainCoordinator: MainBaseCoordinator {
         
         return rootViewController
     }
-    
-    func moveTo(screen: Screen) {
-        switch screen {
-        case .HomeScreen:
-            (rootViewController as? UITabBarController)?.selectedIndex = 0
-        case .AboutScreen:
-            (rootViewController as? UITabBarController)?.selectedIndex = 1
-        }
-    }
-    
+        
     func resetToRoot() -> Self {
         homeCoordinator.resetToRoot()
         return self

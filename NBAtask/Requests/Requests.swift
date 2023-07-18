@@ -23,7 +23,7 @@ class Requests {
             completion(.failure(NSError(domain: "", code: 0, userInfo: nil)))
             return
         }
-        
+
         URLSession.shared.dataTask(with: url) { (data, response, error) in
             if let error = error {
                 completion(.failure(error))
@@ -40,6 +40,36 @@ class Requests {
                 decoder.keyDecodingStrategy = .convertFromSnakeCase
                 let players = try decoder.decode(PlayersResponseModel.self, from: data)
                 completion(.success(players))
+            } catch {
+                completion(.failure(error))
+            }
+        }.resume()
+    }
+
+    static func fetchSeasonAverages(playerID: Int, completion: @escaping (Result<SeasonAveragesResponseModel, Error>) -> Void) {
+        let urlString = "\(Constants.seasonAveragesURL)?player_ids[]=\(playerID)"
+        
+        guard let url = URL(string: urlString) else {
+            completion(.failure(NSError(domain: "", code: 0, userInfo: nil)))
+            return
+        }
+        
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let data = data else {
+                completion(.failure(NSError(domain: "", code: 0, userInfo: nil)))
+                return
+            }
+            
+            do {
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                let seasonAverages = try decoder.decode(SeasonAveragesResponseModel.self, from: data)
+                completion(.success(seasonAverages))
             } catch {
                 completion(.failure(error))
             }

@@ -10,7 +10,6 @@ import Foundation
 protocol MainBaseCoordinator: Coordinator {
     var homeCoordinator: HomeBaseCoordinator { get }
     var aboutCoordinator: AboutBaseCoordinator { get }
-    func moveTo(screen: Screen)
 }
 
 protocol HomeBaseCoordinated {

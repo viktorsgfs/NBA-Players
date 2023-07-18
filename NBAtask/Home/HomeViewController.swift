@@ -38,26 +38,30 @@ class HomeViewController: UITableViewController, HomeBaseCoordinated {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.tableView.prefetchDataSource = self
     }
     
     private func configureSearchBar() {
-        
         searchBar.delegate = self
         searchBar.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 80)
         tableView.tableHeaderView = searchBar
     }
     
-    private func fetchPlayers(searchText: String? = "") {
+    private func fetchPlayers(page: Int? = 1, searchText: String? = "") {
         
         self.isSearching = true
-        Requests.fetchPlayers(page: 1, searchText: searchText) { result in
+        Requests.fetchPlayers(page: page!, searchText: searchText) { result in
             switch result {
             case .success(let players):
 
                 self.isSearching = false
-                print("\(players)")
-                self.allPlayers = players.data
+                
+                if searchText != "" {
+                    self.allPlayers = players.data
+                } else {
+                    self.allPlayers.append(contentsOf: players.data)
+                }
+                
                 self.dataSource = self.allPlayers
                 
                 DispatchQueue.main.async {
@@ -75,7 +79,6 @@ class HomeViewController: UITableViewController, HomeBaseCoordinated {
     private func registerCells() {
         self.tableView.register(UINib(nibName: "\(PlayerTableViewCell.self)", bundle: nil), forCellReuseIdentifier: Constants.playersCellIdentifier)
         self.tableView.register(LoadingTableViewCell.self, forCellReuseIdentifier: Constants.loadingCellIdentifier)
-
     }
     
 }
@@ -129,5 +132,16 @@ extension HomeViewController: UISearchBarDelegate {
         }
         
         tableView.reloadData()
+    }
+}
+
+// MARK: Prefetch
+extension HomeViewController: UITableViewDataSourcePrefetching {
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        let lastRowIndex = dataSource.count - 1
+        if indexPaths.contains(where: { $0.row >= lastRowIndex }) {
+            let nextPage = dataSource.count / Constants.playersToFetch + 1
+            self.fetchPlayers(page: nextPage)
+        }
     }
 }

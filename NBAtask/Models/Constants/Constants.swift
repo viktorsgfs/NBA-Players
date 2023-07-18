@@ -12,4 +12,5 @@ struct Constants {
     static let playersToFetch = 25
     static let playersCellIdentifier = "playersCellIdentifier"
     static let loadingCellIdentifier = "loadingCellIdentifier"
+    static let seasonAveragesURL = "https://www.balldontlie.io/api/v1/season_averages"
 }

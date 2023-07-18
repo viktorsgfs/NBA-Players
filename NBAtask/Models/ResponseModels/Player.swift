@@ -8,6 +8,7 @@
 import Foundation
 
 struct Player: Codable {
+    let id: Int
     let firstName: String
     let lastName: String
     let position: String
